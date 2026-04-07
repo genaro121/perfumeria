@@ -1,5 +1,5 @@
-const supabaseUrl = "TU_URL";
-const supabaseKey = "TU_KEY";
+const supabaseUrl = "https://akezoxfgidmbemwtmtci.supabase.co";
+const supabaseKey = "sb_publishable_3isSu0UrNor0Jxh4HbBKhA_Q3p3UxrJ";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 let adminActivo = false;
