@@ -34,12 +34,40 @@ async function cargarProducto() {
 function mostrarProducto(p) {
   const cont = document.getElementById("productoDetalle");
 
+  // 📲 mensaje para WhatsApp
+  const mensaje = encodeURIComponent(
+    `Hola, estoy interesado en ${p.nombre}`
+  );
+
+  const telefono = "5491127650145"; // formato internacional (Argentina)
+
+  const linkWhatsapp = `https://wa.me/${telefono}?text=${mensaje}`;
+
   cont.innerHTML = `
     <h2>${p.nombre}</h2>
+
     <img src="${p.foto1}" style="max-width:300px">
     <img src="${p.foto2}" style="max-width:300px">
+
     <p><b>Precio:</b> $${p.precio}</p>
     <p>${p.descripcion}</p>
+
+    <br>
+
+    <a href="${linkWhatsapp}" target="_blank" style="
+      display:inline-block;
+      padding:10px 15px;
+      background:#25D366;
+      color:#fff;
+      border-radius:8px;
+      text-decoration:none;
+      font-weight:bold;
+    ">
+      Comprar por WhatsApp
+    </a>
+
+    <br><br>
+
     <a href="index.html">⬅ Volver</a>
   `;
 }
