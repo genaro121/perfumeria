@@ -1,3 +1,5 @@
+alert("JS CARGADO");
+
 // 🔵 SUPABASE
 const supabaseUrl = "https://akezoxfgidmbemwtmtci.supabase.co"; 
 const supabaseKey = "sb_publishable_3isSu0UrNor0Jxh4HbBKhA_Q3p3UxrJ";
