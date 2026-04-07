@@ -1,10 +1,12 @@
+// 🔵 SUPABASE
 const supabaseUrl = "https://akezoxfgidmbemwtmtci.supabase.co"; 
 const supabaseKey = "sb_publishable_3isSu0UrNor0Jxh4HbBKhA_Q3p3UxrJ";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+// 🔐 ADMIN
 let adminActivo = false;
 
-// 🔴 DATOS
+// DATOS
 let categorias = [];
 let productos = [];
 
@@ -18,7 +20,7 @@ document.addEventListener("click", ()=>{
   document.getElementById("dropdownMenu")?.classList.remove("show");
 });
 
-// 🔐 ADMIN (FIX DEFINITIVO)
+// 🔐 ACTIVAR ADMIN (VERSIÓN ÚNICA Y CORRECTA)
 function activarAdmin() {
   let mail = prompt("Ingresá tu mail de administrador:");
 
