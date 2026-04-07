@@ -1,10 +1,10 @@
-const supabaseUrl = "https://akezoxfgidmbemwtmtci.supabase.co";
+const supabaseUrl = "https://akezoxfgidmbemwtmtci.supabase.co"; 
 const supabaseKey = "sb_publishable_3isSu0UrNor0Jxh4HbBKhA_Q3p3UxrJ";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 let adminActivo = false;
 
-// 🔴 RECUPERA CATEGORIAS DESDE PRODUCTOS
+// 🔴 DATOS
 let categorias = [];
 let productos = [];
 
@@ -18,7 +18,7 @@ document.addEventListener("click", ()=>{
   document.getElementById("dropdownMenu")?.classList.remove("show");
 });
 
-// ADMIN
+// 🔐 ADMIN (FIX DEFINITIVO)
 function activarAdmin() {
   let mail = prompt("Ingresá tu mail de administrador:");
 
@@ -128,7 +128,7 @@ async function eliminarProducto() {
   cargarProductos();
 }
 
-// 🔴 CATEGORIAS SOLO VISUALES
+// CATEGORIAS
 function crearCategoria() {
   if(!adminActivo) return alert("No autorizado");
   let n = document.getElementById("nuevaCategoria")?.value;
