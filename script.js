@@ -1,4 +1,4 @@
-alert("JS CARGADO");
+
 
 // 🔵 SUPABASE
 const supabaseUrl = "https://akezoxfgidmbemwtmtci.supabase.co"; 
