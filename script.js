@@ -1,13 +1,11 @@
-// 🔵 BANNER (AHORA CON SUPABASE)
+// 🔵 BANNER CORREGIDO (SINCRONIZA ENTRE DISPOSITIVOS)
 
 let banners = [];
 let bannerIndex = 0;
 let intervaloBanner = null;
 
-// ⏱️ TIEMPO ENTRE IMÁGENES (MODIFICABLE)
 const TIEMPO_BANNER = 4000;
 
-// convertir imagen
 function fileToBase64Banner(file) {
   return new Promise((res) => {
     let reader = new FileReader();
@@ -16,7 +14,6 @@ function fileToBase64Banner(file) {
   });
 }
 
-// agregar imagen (GUARDA EN SUPABASE)
 async function agregarBanner() {
   if (!adminActivo) return alert("No autorizado");
 
@@ -37,19 +34,18 @@ async function agregarBanner() {
   cargarBanners();
 }
 
-// eliminar imagen (ELIMINA DE SUPABASE)
 async function eliminarBanner() {
   if (!adminActivo) return alert("No autorizado");
 
   let index = document.getElementById("eliminarBannerSelect")?.value;
+  let banner = banners[index];
 
-  let bannerAEliminar = banners[index];
-  if (!bannerAEliminar) return;
+  if (!banner) return;
 
   let { error } = await supabaseClient
     .from("banners")
     .delete()
-    .eq("imagen", bannerAEliminar);
+    .eq("id", banner.id);
 
   if (error) {
     console.error(error);
@@ -59,7 +55,6 @@ async function eliminarBanner() {
   cargarBanners();
 }
 
-// cargar desde supabase
 async function cargarBanners() {
   let { data, error } = await supabaseClient
     .from("banners")
@@ -71,11 +66,10 @@ async function cargarBanners() {
     return;
   }
 
-  banners = data.map(b => b.imagen);
+  banners = data;
   renderBanner();
 }
 
-// render banner
 function renderBanner() {
   const cont = document.getElementById("bannerCarousel");
   const select = document.getElementById("eliminarBannerSelect");
@@ -85,9 +79,9 @@ function renderBanner() {
   cont.innerHTML = "";
   if (select) select.innerHTML = "";
 
-  banners.forEach((img, i) => {
+  banners.forEach((banner, i) => {
     let el = document.createElement("img");
-    el.src = img;
+    el.src = banner.imagen;
     el.className = "banner-img" + (i === 0 ? " active" : "");
     cont.appendChild(el);
 
@@ -96,14 +90,12 @@ function renderBanner() {
     }
   });
 
+  bannerIndex = 0;
   iniciarCarrusel();
 }
 
-// carrusel automático
 function iniciarCarrusel() {
-  if (intervaloBanner) {
-    clearInterval(intervaloBanner);
-  }
+  if (intervaloBanner) clearInterval(intervaloBanner);
 
   intervaloBanner = setInterval(() => {
     let imgs = document.querySelectorAll(".banner-img");
@@ -116,7 +108,6 @@ function iniciarCarrusel() {
   }, TIEMPO_BANNER);
 }
 
-// mostrar panel admin banner
 function actualizarBannerAdmin() {
   const panel = document.getElementById("adminBanner");
   if (!panel) return;
@@ -124,14 +115,14 @@ function actualizarBannerAdmin() {
   panel.style.display = adminActivo ? "block" : "none";
 }
 
-// 🔁 integrar con tu render (NO SE TOCA LO TUYO)
+// 🔁 NO TOCA TU SISTEMA, SOLO SE ENGANCHA
 const renderOriginal = render;
 render = function(...args) {
   renderOriginal.apply(this, args);
   actualizarBannerAdmin();
 };
 
-// INIT BANNER
+// INIT
 document.addEventListener("DOMContentLoaded", () => {
   cargarBanners();
 });
