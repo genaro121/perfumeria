@@ -11,19 +11,16 @@
 
 <button onclick="location.href='index.html'">Volver</button>
 
-<input id="busqueda" placeholder="Buscar">
+<input type="text" id="busqueda" placeholder="Buscar...">
 
-<select id="filtroCategoria"></select>
-<select id="filtroEstacion">
-  <option value="">Todas las estaciones</option>
-  <option>Verano</option>
-  <option>Otoño</option>
-  <option>Invierno</option>
-  <option>Primavera</option>
-</select>
+<button onclick="filtrarEstacion('Verano')">Verano</button>
+<button onclick="filtrarEstacion('Invierno')">Invierno</button>
+<button onclick="filtrarEstacion('Otoño')">Otoño</button>
+<button onclick="filtrarEstacion('Primavera')">Primavera</button>
 
-<div id="lista" class="grid"></div>
+<div id="todosProductos"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="todos.js"></script>
 </body>
 </html>

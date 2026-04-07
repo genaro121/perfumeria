@@ -330,3 +330,32 @@ body {
   gap: 15px;
   margin-top: 15px;
 }
+
+#bannerContainer {
+  width: 100%;
+  overflow: hidden;
+}
+
+#bannerCarousel {
+  width: 100%;
+  height: 250px; /* ALTURA FIJA */
+  position: relative;
+}
+
+.banner-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  position: absolute;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.banner-img.active {
+  opacity: 1;
+}
+
+#adminBanner {
+  padding: 10px;
+  background: #fff;
+}

@@ -1,43 +1,58 @@
-let productos = JSON.parse(localStorage.getItem("productos")) || [];
+const supabaseUrl = "https://akezoxfgidmbemwtmtci.supabase.co"; 
+const supabaseKey = "sb_publishable_3isSu0UrNor0Jxh4HbBKhA_Q3p3UxrJ";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-let params = new URLSearchParams(location.search);
-let nombre = params.get("nombre");
+// 🔍 OBTENER NOMBRE DESDE URL
+function obtenerNombre() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("nombre");
+}
 
-let p = productos.find(x => x.nombre === nombre);
+// 🔎 CARGAR PRODUCTO
+async function cargarProducto() {
+  const nombre = obtenerNombre();
 
-let cont = document.getElementById("prod");
+  if (!nombre) {
+    mostrarError();
+    return;
+  }
 
-if (!p) {
-  cont.innerHTML = "Producto no encontrado";
-} else {
+  const { data, error } = await supabaseClient
+    .from("productos")
+    .select("*")
+    .ilike("nombre", nombre);
 
-  let mensaje = encodeURIComponent(
-    `Hola! ¿Cómo estás? Quisiera consultar por el perfume ${p.nombre}. Muchas gracias.`
-  );
+  if (error || !data || data.length === 0) {
+    mostrarError();
+    return;
+  }
+
+  mostrarProducto(data[0]);
+}
+
+// 🎨 MOSTRAR PRODUCTO
+function mostrarProducto(p) {
+  const cont = document.getElementById("productoDetalle");
 
   cont.innerHTML = `
-    <div class="detalle">
-
-      <div class="imagenes">
-        <img src="${p.foto1}">
-        <img src="${p.foto2}">
-      </div>
-
-      <div class="info">
-        <h1>${p.nombre}</h1>
-
-        <p class="precio">$${p.precio}</p>
-
-        <p class="descripcion">${p.descripcion}</p>
-
-        <a class="btn-wsp" 
-           href="https://wa.me/541127650145?text=${mensaje}" 
-           target="_blank">
-           Consultar por WhatsApp
-        </a>
-
-      </div>
-
-    </div>
+    <h2>${p.nombre}</h2>
+    <img src="${p.foto1}" style="max-width:300px">
+    <img src="${p.foto2}" style="max-width:300px">
+    <p><b>Precio:</b> $${p.precio}</p>
+    <p>${p.descripcion}</p>
+    <a href="index.html">⬅ Volver</a>
   `;
 }
+
+// ❌ ERROR
+function mostrarError() {
+  const cont = document.getElementById("productoDetalle");
+
+  cont.innerHTML = `
+    <h2>Producto no encontrado</h2>
+    <a href="index.html">⬅ Volver al inicio</a>
+  `;
+}
+
+// INIT
+document.addEventListener("DOMContentLoaded", cargarProducto);

@@ -1,66 +1,65 @@
-let productos = JSON.parse(localStorage.getItem("productos")) || [];
-let categorias = JSON.parse(localStorage.getItem("categorias")) || [];
+const supabaseUrl = "https://akezoxfgidmbemwtmtci.supabase.co"; 
+const supabaseKey = "sb_publishable_3isSu0UrNor0Jxh4HbBKhA_Q3p3UxrJ";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-let filtroTexto = "";
-let filtroCategoria = "";
-let filtroEstacion = "";
+let productos = [];
 
-function cargarFiltros(){
-  let catSelect = document.getElementById("filtroCategoria");
+// 🔵 CARGAR PRODUCTOS
+async function cargarProductos() {
+  const { data, error } = await supabaseClient
+    .from("productos")
+    .select("*");
 
-  catSelect.innerHTML = `<option value="">Todas las categorías</option>`;
+  if (error) {
+    console.error(error);
+    alert("Error cargando productos");
+    return;
+  }
 
-  categorias.forEach(c=>{
-    let op = document.createElement("option");
-    op.value = c;
-    op.textContent = c;
-    catSelect.appendChild(op);
-  });
+  productos = data || [];
+  render();
 }
 
-function render() {
-
-  let cont = document.getElementById("lista");
+// 🔍 FILTRAR Y MOSTRAR
+function render(filtro = "", estacion = "") {
+  const cont = document.getElementById("todosProductos");
   cont.innerHTML = "";
 
   productos
-    .sort((a,b)=>a.nombre.localeCompare(b.nombre))
     .filter(p =>
-      p.nombre.toLowerCase().includes(filtroTexto.toLowerCase()) &&
-      (filtroCategoria === "" || p.categoria === filtroCategoria) &&
-      (filtroEstacion === "" || p.estacion === filtroEstacion)
+      p.nombre.toLowerCase().includes(filtro.toLowerCase()) &&
+      (estacion === "" || p.estacion === estacion)
     )
     .forEach(p => {
+      const div = document.createElement("div");
+      div.className = "producto";
 
-      let card = document.createElement("div");
-      card.className = "producto";
-
-      card.innerHTML = `
-        <img src="${p.foto1}">
+      div.innerHTML = `
+        <img src="${p.foto1}" style="width:150px">
         <h4>${p.nombre}</h4>
         <p>$${p.precio}</p>
-
         <a href="producto.html?nombre=${encodeURIComponent(p.nombre)}">Ver</a>
       `;
 
-      cont.appendChild(card);
+      cont.appendChild(div);
     });
 }
 
-document.getElementById("busqueda").addEventListener("input", e => {
-  filtroTexto = e.target.value;
-  render();
-});
+// 🔎 BUSCADOR
+function activarBusqueda() {
+  const input = document.getElementById("busqueda");
+  input.addEventListener("input", e => {
+    render(e.target.value);
+  });
+}
 
-document.getElementById("filtroCategoria").addEventListener("change", e=>{
-  filtroCategoria = e.target.value;
-  render();
-});
+// 🌦 FILTRO ESTACIÓN
+function filtrarEstacion(estacion) {
+  render(document.getElementById("busqueda")?.value || "", estacion);
+}
 
-document.getElementById("filtroEstacion").addEventListener("change", e=>{
-  filtroEstacion = e.target.value;
-  render();
+// INIT
+document.addEventListener("DOMContentLoaded", () => {
+  cargarProductos();
+  activarBusqueda();
 });
-
-cargarFiltros();
-render();

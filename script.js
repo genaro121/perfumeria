@@ -248,3 +248,100 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+// 🔵 BANNER
+
+let banners = JSON.parse(localStorage.getItem("banners")) || [];
+let bannerIndex = 0;
+
+// convertir imagen
+function fileToBase64Banner(file) {
+  return new Promise((res) => {
+    let reader = new FileReader();
+    reader.onload = () => res(reader.result);
+    reader.readAsDataURL(file);
+  });
+}
+
+// agregar imagen
+async function agregarBanner() {
+  if (!adminActivo) return alert("No autorizado");
+
+  let file = document.getElementById("bannerInput").files[0];
+  if (!file) return alert("Seleccioná una imagen");
+
+  let img = await fileToBase64Banner(file);
+
+  banners.push(img);
+  localStorage.setItem("banners", JSON.stringify(banners));
+
+  renderBanner();
+}
+
+// eliminar imagen
+function eliminarBanner() {
+  if (!adminActivo) return alert("No autorizado");
+
+  let index = document.getElementById("eliminarBannerSelect").value;
+
+  banners.splice(index, 1);
+  localStorage.setItem("banners", JSON.stringify(banners));
+
+  renderBanner();
+}
+
+// render banner
+function renderBanner() {
+  const cont = document.getElementById("bannerCarousel");
+  const select = document.getElementById("eliminarBannerSelect");
+
+  if (!cont) return;
+
+  cont.innerHTML = "";
+  if (select) select.innerHTML = "";
+
+  banners.forEach((img, i) => {
+    let el = document.createElement("img");
+    el.src = img;
+    el.className = "banner-img" + (i === 0 ? " active" : "");
+    cont.appendChild(el);
+
+    if (select) {
+      select.add(new Option("Imagen " + (i + 1), i));
+    }
+  });
+
+  iniciarCarrusel();
+}
+
+// carrusel automático
+function iniciarCarrusel() {
+  setInterval(() => {
+    let imgs = document.querySelectorAll(".banner-img");
+    if (imgs.length === 3000) return;
+
+    imgs[bannerIndex].classList.remove("active");
+    bannerIndex = (bannerIndex + 1) % imgs.length;
+    imgs[bannerIndex].classList.add("active");
+
+  }, 3000);
+}
+
+// mostrar panel admin banner
+function actualizarBannerAdmin() {
+  const panel = document.getElementById("adminBanner");
+  if (!panel) return;
+
+  panel.style.display = adminActivo ? "block" : "none";
+}
+
+// 🔁 integrar con tu render
+const renderOriginal = render;
+render = function(...args) {
+  renderOriginal.apply(this, args);
+  actualizarBannerAdmin();
+};
+
+// INIT BANNER
+document.addEventListener("DOMContentLoaded", () => {
+  renderBanner();
+});
